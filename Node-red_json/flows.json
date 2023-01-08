@@ -1,0 +1,243 @@
+[
+    {
+        "id": "cf84ddf99a126f9c",
+        "type": "tab",
+        "label": "Flow 2",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "a06d74db.919808",
+        "type": "mqtt in",
+        "z": "cf84ddf99a126f9c",
+        "name": "",
+        "topic": "Device/#",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "3148e7fc65572cbd",
+        "nl": false,
+        "rap": false,
+        "inputs": 0,
+        "x": 140,
+        "y": 340,
+        "wires": [
+            [
+                "98201759.e4d558"
+            ]
+        ]
+    },
+    {
+        "id": "6825dd23.d4ee44",
+        "type": "debug",
+        "z": "cf84ddf99a126f9c",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 590,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "4265dd53.5b18a4",
+        "type": "debug",
+        "z": "cf84ddf99a126f9c",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 770,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "ddb3e588.199508",
+        "type": "mysql",
+        "z": "cf84ddf99a126f9c",
+        "mydb": "6a06a6b279021a9d",
+        "name": "",
+        "x": 600,
+        "y": 460,
+        "wires": [
+            [
+                "4265dd53.5b18a4"
+            ]
+        ]
+    },
+    {
+        "id": "c2ae48f5d544f646",
+        "type": "inject",
+        "z": "cf84ddf99a126f9c",
+        "name": "Insert",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": "",
+        "topic": "test",
+        "payload": "hello ",
+        "payloadType": "str",
+        "x": 150,
+        "y": 260,
+        "wires": [
+            [
+                "98201759.e4d558"
+            ]
+        ]
+    },
+    {
+        "id": "98201759.e4d558",
+        "type": "function",
+        "z": "cf84ddf99a126f9c",
+        "name": "Create query in device",
+        "func": "function padTo2Digits(num) {\n    return num.toString().padStart(2, '0');\n}\n\nfunction formatDate(date) {\n    return (\n        [\n            date.getFullYear(),\n            padTo2Digits(date.getMonth() + 1),\n            padTo2Digits(date.getDate()),\n        ].join('-') +\n        ' ' +\n        [\n            padTo2Digits(date.getHours()),\n            padTo2Digits(date.getMinutes()),\n            padTo2Digits(date.getSeconds()),\n        ].join(':')\n    );\n}\nvar d = new Date();\nvar dformat = formatDate(d);\nvar out = \"INSERT INTO device_log (timestamp,topic,data)\"\nout = out + \"VALUES ('\" + dformat + \"','\" \nout = out + msg.topic + \"','\" + msg.payload + \"');\"\n    \nmsg.topic=out;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 360,
+        "y": 340,
+        "wires": [
+            [
+                "6825dd23.d4ee44",
+                "ddb3e588.199508"
+            ]
+        ]
+    },
+    {
+        "id": "c8f1812d5815630f",
+        "type": "mqtt in",
+        "z": "cf84ddf99a126f9c",
+        "name": "",
+        "topic": "Garden/#",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "3148e7fc65572cbd",
+        "nl": false,
+        "rap": false,
+        "inputs": 0,
+        "x": 140,
+        "y": 420,
+        "wires": [
+            [
+                "b8334e6a7206fc86"
+            ]
+        ]
+    },
+    {
+        "id": "b8334e6a7206fc86",
+        "type": "function",
+        "z": "cf84ddf99a126f9c",
+        "name": "Create query in Garden",
+        "func": "function padTo2Digits(num) {\n    return num.toString().padStart(2, '0');\n}\n\nfunction formatDate(date) {\n    return (\n        [\n            date.getFullYear(),\n            padTo2Digits(date.getMonth() + 1),\n            padTo2Digits(date.getDate()),\n        ].join('-') +\n        ' ' +\n        [\n            padTo2Digits(date.getHours()),\n            padTo2Digits(date.getMinutes()),\n            padTo2Digits(date.getSeconds()),\n        ].join(':')\n    );\n}\nvar d = new Date();\nvar dformat = formatDate(d);\nvar out = \"INSERT INTO data_log (timestamp,topic,data)\"\nout = out + \"VALUES ('\" + dformat + \"','\" \nout = out + msg.topic + \"','\" + msg.payload + \"');\"\n    \nmsg.topic=out;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 370,
+        "y": 420,
+        "wires": [
+            [
+                "ddb3e588.199508",
+                "6825dd23.d4ee44"
+            ]
+        ]
+    },
+    {
+        "id": "be41a506.f7f9f8",
+        "type": "comment",
+        "z": "cf84ddf99a126f9c",
+        "name": "Log everything",
+        "info": "",
+        "x": 180,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "35799c49ce060fab",
+        "type": "inject",
+        "z": "cf84ddf99a126f9c",
+        "name": "Insert",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": "",
+        "topic": "test",
+        "payload": "hello ",
+        "payloadType": "str",
+        "x": 150,
+        "y": 500,
+        "wires": [
+            [
+                "b8334e6a7206fc86"
+            ]
+        ]
+    },
+    {
+        "id": "3148e7fc65572cbd",
+        "type": "mqtt-broker",
+        "name": "",
+        "broker": "localhost",
+        "port": "1883",
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": "4",
+        "keepalive": "60",
+        "cleansession": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    },
+    {
+        "id": "6a06a6b279021a9d",
+        "type": "MySQLdatabase",
+        "name": "",
+        "host": "localhost",
+        "port": "3306",
+        "db": "garden",
+        "tz": "local",
+        "charset": "UTF8"
+    }
+]
