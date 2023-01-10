@@ -32,6 +32,9 @@ void setup() {
   dht.begin();
   // get temperature sensor details.
   sensor_t sensor;
+  pinMode(soil1,INPUT);
+  pinMode(soil2,INPUT);
+  pinMode(soil3,INPUT);
   dht.temperature().getSensor(&sensor);
   dht.humidity().getSensor(&sensor);
 }
@@ -55,23 +58,25 @@ void read_dht() {
     dht.temperature().getEvent(&event);
     if (isnan(event.temperature)) {
       //   Serial.println(F("Error reading temperature!"));
+      temp = 0 ;
     }
     else {
-      //      Serial.print(F("Temperature: "));
+      Serial.print(F("Temperature: "));
       temp = event.temperature;
-      //    Serial.print(temp);
-      //   Serial.println(F("°C"));
+      Serial.print(temp);
+      Serial.println(F("°C"));
     }
     // Get humidity event and print its value.
     dht.humidity().getEvent(&event);
     if (isnan(event.relative_humidity)) {
-      //    Serial.println(F("Error reading humidity!"));
+       Serial.println(F("Error reading humidity!"));
+      hum = 0 ;
     }
     else {
-      //      Serial.print(F("Humidity: "));
+      Serial.print(F("Humidity: "));
       hum = event.relative_humidity;
-      //   Serial.print(hum);
-      //   Serial.println(F("%"));
+      Serial.print(hum);
+      Serial.println(F("%"));
     }
     soil1 = analogRead(SOIL1);
     soil2 = analogRead(SOIL2);
